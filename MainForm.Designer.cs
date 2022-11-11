@@ -73,10 +73,10 @@
             // 
             // Server_Connection
             // 
-            this.Server_Connection.Location = new System.Drawing.Point(265, 343);
+            this.Server_Connection.Location = new System.Drawing.Point(245, 343);
             this.Server_Connection.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Server_Connection.Name = "Server_Connection";
-            this.Server_Connection.Size = new System.Drawing.Size(75, 31);
+            this.Server_Connection.Size = new System.Drawing.Size(95, 31);
             this.Server_Connection.TabIndex = 4;
             this.Server_Connection.Text = "房主";
             this.Server_Connection.UseVisualStyleBackColor = true;
@@ -87,7 +87,7 @@
             this.Client_Connection.Location = new System.Drawing.Point(364, 343);
             this.Client_Connection.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Client_Connection.Name = "Client_Connection";
-            this.Client_Connection.Size = new System.Drawing.Size(75, 31);
+            this.Client_Connection.Size = new System.Drawing.Size(93, 31);
             this.Client_Connection.TabIndex = 5;
             this.Client_Connection.Text = "连接";
             this.Client_Connection.UseVisualStyleBackColor = true;
@@ -95,10 +95,10 @@
             // 
             // AI
             // 
-            this.AI.Location = new System.Drawing.Point(463, 343);
+            this.AI.Location = new System.Drawing.Point(483, 343);
             this.AI.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.AI.Name = "AI";
-            this.AI.Size = new System.Drawing.Size(75, 31);
+            this.AI.Size = new System.Drawing.Size(98, 31);
             this.AI.TabIndex = 6;
             this.AI.Text = "AI";
             this.AI.UseVisualStyleBackColor = true;

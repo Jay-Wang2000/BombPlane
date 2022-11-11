@@ -17,6 +17,7 @@ namespace BombPlanes_final
         public string role { get; set; }
 
         public Socket socket { get; set; }
+
         public enum State
         {
             preparing,
@@ -28,6 +29,7 @@ namespace BombPlanes_final
         public Battle()
         {
             InitializeComponent();
+            gridNetworkMyself.PlaneVisiblibity = true;
         }
 
         public void AddLog(string str)
@@ -46,13 +48,11 @@ namespace BombPlanes_final
                 case State.preparing:
                     _state = State.gaming;
                     MainButton.Text = "轰炸";
-                    break;
-                case State.gaming:
                     if (role.Equals("Server"))
-                    {
-                        ServerPlayAsync();
-                    }
-                    else if (role.Equals("Client"))
+                        ServerPlayAsync();             
+                        break;
+                case State.gaming:
+                     if (role.Equals("Client"))
                     {
                         ClientPlayAsync();
                     }
@@ -80,10 +80,10 @@ namespace BombPlanes_final
             MessageBox.Show(outcome);
 
         }
-        private async Task ServerPlayAsync()
+        private void ServerPlayAsync()
         {
             var buffer = new byte[1_024];
-            var received = await socket.ReceiveAsync(buffer, SocketFlags.None);
+            var received =  socket.Receive(buffer, SocketFlags.None);
             var response = Encoding.UTF8.GetString(buffer, 0, received);
             BombResult bombResult = gridNetworkMyself.Bomb(new(response[0], response[1]));
             if (bombResult == BombResult.head)
@@ -94,11 +94,11 @@ namespace BombPlanes_final
             {
                 var message = gridNetworkCounter.SelectedButtonPoint.X.ToString() + bombResult.ToString();
                 var messageBytes = Encoding.UTF8.GetBytes(message);
-                _ = await socket.SendAsync(messageBytes, SocketFlags.None);
+                 socket.SendAsync(messageBytes, SocketFlags.None);
                 AddLog("sent " + message);
 
                 buffer = new byte[1_024];
-                received = await socket.ReceiveAsync(buffer, SocketFlags.None);
+                received =socket.Receive(buffer, SocketFlags.None);
                 response = Encoding.UTF8.GetString(buffer, 0, received);
                 if (response.Equals("I lose!"))
                 {
@@ -114,20 +114,20 @@ namespace BombPlanes_final
                     AddLog("hitted " + response + " " + bombResult.ToString());
                 }
             }
-            _ = await socket.SendAsync(Encoding.UTF8.GetBytes("I lose!"), SocketFlags.None);
+            socket.Send(Encoding.UTF8.GetBytes("I lose!"), SocketFlags.None);
             end("You lose!");
         }
-        private async Task ClientPlayAsync()
+        private void ClientPlayAsync()
         {
             var message = gridNetworkCounter.SelectedButtonPoint.X.ToString()
                     + gridNetworkCounter.SelectedButtonPoint.X.ToString();
             var messageBytes = Encoding.UTF8.GetBytes(message);
-            _ = await socket.SendAsync(messageBytes, SocketFlags.None);
+            socket.Send(messageBytes, SocketFlags.None);
             AddLog("sent" + message);
             do
             {
                 var buffer = new byte[1_024];
-                var received = await socket.ReceiveAsync(buffer, SocketFlags.None);
+                var received = socket.Receive(buffer, SocketFlags.None);
                 var response = Encoding.UTF8.GetString(buffer, 0, received);
 
                 if (response.Equals("I lose!"))
@@ -144,22 +144,23 @@ namespace BombPlanes_final
                         _numOfHittedPlane++;
                     message = gridNetworkCounter.SelectedButtonPoint.X.ToString() + bombResult.ToString();
                     messageBytes = Encoding.UTF8.GetBytes(message);
-                    _ = await socket.SendAsync(messageBytes, SocketFlags.None);
+                    socket.Send(messageBytes, SocketFlags.None);
                     AddLog("sent" + message);
                 }
 
             } while (_numOfHittedPlane < 3);
-            _ = await socket.SendAsync(Encoding.UTF8.GetBytes("I lose!"), SocketFlags.None);
+            socket.Send(Encoding.UTF8.GetBytes("I lose!"), SocketFlags.None);
             end("You lose!");
         }
         private void AIPlay()
         {
+            Random random = new Random();
             int counterHittedPioint=0;
             while (counterHittedPioint < 3 && _numOfHittedPlane < 3)
             {
                 if (gridNetworkCounter.Bomb(gridNetworkCounter.SelectedButtonPoint).Equals(BombResult.head))
                     counterHittedPioint++;
-                if (gridNetworkMyself.Bomb(AIChoose()).Equals(BombResult.head))
+                if (gridNetworkMyself.Bomb(new(random.Next(0, 9), random.Next(0, 9))).Equals(BombResult.head))
                     _numOfHittedPlane++;
             }
             if (counterHittedPioint < 3)
@@ -170,6 +171,7 @@ namespace BombPlanes_final
 
         private Point AIChoose()
         {
+
             return new(0, 0);
         }
     }
